@@ -2,6 +2,9 @@
 pragma solidity ^0.8.9;
 
 contract BalanceProxy {
+    bytes32 private constant BALANCE_IMPL_SLOT =
+        keccak256("org.openzeppelin.proxy.implementation");
+
     address private balanceImpl;
 
     constructor(address _balanceImpl) {
@@ -36,6 +39,10 @@ contract BalanceProxy {
     }
 
     function setBalanceImpl(address _balanceImpl) private {
+        bytes32 slot = BALANCE_IMPL_SLOT;
+        assembly {
+            sstore(slot, _balanceImpl)
+        }
         balanceImpl = _balanceImpl;
     }
 }
